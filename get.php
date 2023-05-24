@@ -7,18 +7,25 @@
 header('Content-type: application/json');
 # Mendapatkan method yang digunakan: GET/POST/PUT/DELETE
 # Cara 1: Menggunakan variabel $_SERVER
-$method = $_SERVER['REQUEST_METHOD'];
+// $method = $_SERVER['REQUEST_METHOD'];
 
 # Cara 2: Menggunakan getenv sehingga tidak perlu bekerja dengan variabel $_SERVER
-// $method = getenv('REQUEST_METHOD');
+$method = getenv('REQUEST_METHOD');
 # This function is useful (compared to $_SERVER, $_ENV) because it searches $varname key in those array case-insensitive manner.
 
 # Cara 3: Menggunakan hidden input _METHOD, workaround
 // $method = isset($_REQUEST['_METHOD']) ? $_REQUEST['_METHOD'] : $method;
-$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
+
+$request = explode("/", substr(@$_SERVER['PATH_INFO'], 1)); //isi dari PATH_INFO = semua parameter yang berada setelah localhost/webservice/get.php contohnya "/mahasiswa/1" 
+// di var request path info tadi displit dengan garis miring sehingga var request menjadi array berisi mahasiswa dan 1 
+// echo "parameter 1 = ", ($request[0]);
+// echo "\n", "parameter 2 = ",($request[1]), "\n";
+// echo "parameter 3 = ",($request[2]),"\n";
+
 function process_get($param){
+    // Check parameter, kalau parameter pertama adalah mahasiswa maka if true
     if ($param[0] == "mahasiswa"){
-        // Menggunakan data dbconfig.php
+        // Menggunakan data pada file dbconfig.php
         require_once 'dbconfig.php';
         try {
             $conn = new PDO(
@@ -32,13 +39,14 @@ function process_get($param){
                 )
             );
 
-            // GET DATA BY ID cek parameter setelah
+            // GET DATA BY ID, cek parameter ke 2 setelah parameter pertama "mahasiswa"
+            // Kalau ada parameter kedua berarti if menjadi true
             if (!empty($param[1])) {
                 $handle = $conn->prepare(" SELECT id, nama, npm FROM mahasiswa WHERE ID = :id ");
                 $handle->bindParam(':id', $param[1], PDO::PARAM_INT);
                 $handle->execute();
             } else {
-                // GET ALL
+                // GET ALL, kalo parameter ke 2 gak ada berarti else yang berjalan dan nampilin semua data
                 $handle = $conn->query("SELECT id, nama, npm from mahasiswa");
             }
             // CHECK DATA IF THERE'S 1 or more, then true.
@@ -47,14 +55,17 @@ function process_get($param){
                 $data = $handle->fetchAll(PDO::FETCH_ASSOC);
                 $arr = array('status' => $status, 'data' => $data);
             } else {
-                //NO DATA = false 
+                //NO DATA
                 $status = "Tidak ada data";
                 $arr = array('status' => $status);
             }
+            // menampilkan data dengan format JSON
             echo json_encode($arr);
         } catch (PDOException $pe) {
             die(json_encode($pe->getMessage()));
         }
+    } else{
+        echo "parameter 1 bukan 'mahasiswa' atau tidak ada parameter";
     }
 }
 
@@ -66,7 +77,7 @@ switch ($method){
         process_post($request);
         break;
     case 'GET':
-        process_get($request);
+        process_get($request); //var request menjadi parameter di function process_get()
         break;
     case 'HEAD':
         process_head($request);

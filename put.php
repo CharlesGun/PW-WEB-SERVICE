@@ -41,7 +41,8 @@ function process_put($param){
                 )
             );
             $handle = $conn->prepare("UPDATE mahasiswa SET nama=:nama, npm=:npm, tanggal_tercatat=NOW() WHERE ID=:id");
-            $dataID = $param[1];
+            $dataID = $param[1]; //parameter ke 2 menjadi id untuk kondisi WHERE ID = :id di query
+            // mengisi param pada query
             $handle->bindParam(':id', $dataID, PDO::PARAM_INT);
             $handle->bindParam(':nama', $dataNama);
             $handle->bindParam(':npm', $dataNPM);
@@ -51,8 +52,7 @@ function process_put($param){
             } else {
                 $status = "Gagal";
             }
-            $arr = array('status' => $status, 'id' => $dataID, 'nama' =>
-            $dataNama, 'npm' => $dataNPM);
+            $arr = array('status' => $status, 'id' => $dataID, 'nama' =>$dataNama, 'npm' => $dataNPM);
             echo json_encode($arr);
         } catch (PDOException $pe) {
             die(json_encode($pe->getMessage()));

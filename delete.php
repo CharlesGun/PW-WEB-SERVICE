@@ -1,13 +1,13 @@
 <?php
-# Web Service POST MySQL
-# Membuat data dengan POST: Uji dengan membuka http://localhost/praktikumweb/api/mahasiswa menggunakan metode POST. Data nama dan npm harus disertakan
-# ws-json-post.php
+# Web Service DELETE MySQL
+# Menghapus data dengan DELETE: Uji dengan membuka http://localhost/praktikumweb/api/mahasiswa/1 menggunakan metode DELETE
 # Gunakan aplikasi Postman untuk pengujian API/Web Service | www.getpostman.com
+# ws-json-delete.php
 # Format Data: JSON
 header('Content-type: application/json');
 # Mendapatkan method yang digunakan: GET/POST/PUT/DELETE
 # Cara 1: Menggunakan variabel $_SERVER
-// $method = $_SERVER['REQUEST_METHOD'];
+# $method = $_SERVER['REQUEST_METHOD'];
 
 # Cara 2: Menggunakan getenv sehingga tidak perlu bekerja dengan variabel $_SERVER
 $method = getenv('REQUEST_METHOD');
@@ -15,13 +15,11 @@ $method = getenv('REQUEST_METHOD');
 
 # Cara 3: Menggunakan hidden input _METHOD, workaround
 // $method = isset($_REQUEST['_METHOD']) ? $_REQUEST['_METHOD'] : $method;
+
 $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
-function process_post($param){
-    // CHECK PARAM
-    if ((count($param) == 1) and ($param[0] == "mahasiswa")){
+function process_delete($param){
+    if ((count($param) == 2) and $param[0] == "mahasiswa") {
         require_once 'dbconfig.php';
-        $dataNama = (isset($_POST['nama']) ? $_POST['nama'] : NULL);
-        $dataNPM = (isset($_POST['npm']) ? $_POST['npm'] : NULL);
         try {
             $conn = new PDO(
                 "mysql:host=$host;dbname=$dbname",
@@ -33,29 +31,24 @@ function process_post($param){
                     \PDO::ATTR_PERSISTENT => false
                 )
             );
-            $handle = $conn->prepare("INSERT INTO mahasiswa (nama, npm) VALUES (:nama, :npm)");
+            $handle = $conn->prepare(" DELETE FROM mahasiswa WHERE ID=:id ");
+            $dataID = $param[1];
             // mengisi param pada query
-            $handle->bindParam(':nama', $dataNama);
-            $handle->bindParam(':npm', $dataNPM);
+            $handle->bindParam(':id', $dataID, PDO::PARAM_INT);
             $handle->execute();
             if ($handle->rowCount()) {
                 $status = 'Berhasil';
-                $idTerakhir = $conn->lastInsertId();
-                $arr = array('status' => $status, 'id' => $idTerakhir);
             } else {
                 $status = "Gagal";
-                $arr = array('status' => $status);
             }
+            $arr = array('status' => $status, 'id' => $dataID);
             echo json_encode($arr);
         } catch (PDOException $pe) {
             die(json_encode($pe->getMessage()));
         }
-    } else {
-        echo "param kelebihan atau parameter bukan mahasiswa atau tidak ada parameter";
     }
 }
-
-switch ($method){
+switch ($method) {
     case 'PUT':
         process_put($request);
         break;
@@ -79,5 +72,5 @@ switch ($method){
         break;
 }
 # Gunakan aplikasi Postman untuk pengujian API/Web Service | www.getpostman.com
-# Membuat data dengan POST: Uji dengan membuka http://localhost/praktikumweb/ws-json-post.php/mahasiswa menggunakan metode POST. Data nama dan npm harus disertakan
+# Menghapus data dengan DELETE: Uji dengan membuka http://localhost/praktikumweb/ws-json-delete.php/mahasiswa/1 menggunakan metode DELETE
 ?>
