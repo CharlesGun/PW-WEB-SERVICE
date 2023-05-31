@@ -13,8 +13,7 @@ header('Content-type: application/json');
 $method = getenv('REQUEST_METHOD');
 # This function is useful (compared to $_SERVER, $_ENV) because it searches $varname key in those array case-insensitive manner.
 
-# Cara 3: Menggunakan hidden input _METHOD, workaround
-// $method = isset($_REQUEST['_METHOD']) ? $_REQUEST['_METHOD'] : $method;
+
 $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 function process_put($param){
     if ((count($param) == 2) and $param[0] == "mahasiswa" and

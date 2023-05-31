@@ -13,11 +13,10 @@ header('Content-type: application/json');
 $method = getenv('REQUEST_METHOD');
 # This function is useful (compared to $_SERVER, $_ENV) because it searches $varname key in those array case-insensitive manner.
 
-# Cara 3: Menggunakan hidden input _METHOD, workaround
-// $method = isset($_REQUEST['_METHOD']) ? $_REQUEST['_METHOD'] : $method;
 
 $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1)); //isi dari PATH_INFO = semua parameter yang berada setelah localhost/webservice/get.php contohnya "/mahasiswa/1" 
 // di var request path info tadi displit dengan garis miring sehingga var request menjadi array berisi mahasiswa dan 1 
+var_dump($request);
 // echo "parameter 1 = ", ($request[0]);
 // echo "\n", "parameter 2 = ",($request[1]), "\n";
 // echo "parameter 3 = ",($request[2]),"\n";
