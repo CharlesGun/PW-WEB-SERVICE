@@ -24,8 +24,7 @@ function process_delete($param){
                 $username,
                 $password,
                 array(
-                    \PDO::ATTR_ERRMODE =>
-                    \PDO::ERRMODE_EXCEPTION,
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                     \PDO::ATTR_PERSISTENT => false
                 )
             );

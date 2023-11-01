@@ -5,4 +5,5 @@ $host = 'localhost';
 $dbname = 'kuliah';
 $username = 'root';
 $password = '';
+// $port = 3306;
 ?>
