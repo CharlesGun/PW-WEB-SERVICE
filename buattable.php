@@ -3,7 +3,7 @@
 require_once 'dbconfig.php';
 try {
     $conn = new PDO(
-        "mysql:host=$host;dbname=$dbname",
+        "mysql:host=$host;dbname=$dbname;",
         $username,
         $password,
         array(
@@ -11,15 +11,23 @@ try {
             \PDO::ATTR_PERSISTENT => false
         )
     );
+
     $handle = $conn->prepare("
-CREATE TABLE mahasiswa (
-id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-nama VARCHAR(30) NOT NULL,
-npm VARCHAR(10) NOT NULL,
-tanggal_tercatat TIMESTAMP
-)
-");
+        CREATE TABLE mahasiswa (
+                id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                nama VARCHAR(30) NOT NULL,
+                npm VARCHAR(10) NOT NULL,
+                tanggal_tercatat TIMESTAMP)");
     $handle->execute();
+
+    // equivalent to:
+
+    // $conn->prepare("
+    //     CREATE TABLE mahasiswa (
+    //         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    //         nama VARCHAR(30) NOT NULL,
+    //         npm VARCHAR(10) NOT NULL,
+    //         tanggal_tercatat TIMESTAMP)")->execute();
     echo "Tabel berhasil dibuat.";
 } catch (PDOException $pe) {
     die("Tabel gagal dibuat: " . $pe->getMessage());

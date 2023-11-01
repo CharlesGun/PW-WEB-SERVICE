@@ -21,6 +21,7 @@ VALUES (:nama, :npm)
     $handle->execute();
     $idTerakhir = $conn->lastInsertId();
     echo "Data berhasil dimasukkan. ID: " . $idTerakhir . "<br/>";
+
     # Membuat data array asosiatif
     $data = array('nama' => 'Cantik Jelita', 'npm' => '1815061010');
     $handle->execute($data);
